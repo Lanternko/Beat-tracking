@@ -1,0 +1,38 @@
+# Audio data
+*.wav
+*.mp3
+*.flac
+*.ogg
+genres/
+
+# Model checkpoints & weights
+checkpoint_*/
+*.pth
+*.pt
+*.pkl
+*.joblib
+
+# Feature caches
+feature_cache*/
+
+# Sample audio
+sample_audio/
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+.eggs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environments
+.env
+venv/
+.venv/
+
+# IDE
+.vscode/
+.idea/
