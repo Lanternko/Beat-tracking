@@ -1,0 +1,20 @@
+# Audio dataset (too large for git)
+Beat_tracking_baseline/GTZAN/
+
+# Annotation dataset
+Beat_tracking_baseline/GTZAN_annotations/
+
+# Prediction JSON outputs (reproducible, not needed in repo)
+Beat_tracking_baseline/*_predictions.json
+Beat_tracking_baseline/predictions.json
+Beat_tracking_baseline/dbn_tuned_predictions.json
+Beat_tracking_baseline/baseline.json
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Beat This! downloaded checkpoints
+*.pt
+*.ckpt

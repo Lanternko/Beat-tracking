@@ -1,0 +1,16 @@
+# Core beat tracking dependencies
+numpy
+scipy
+cython
+madmom @ git+https://github.com/CPJKU/madmom.git
+
+# Beat This! (Böck et al., 2024) - main model
+# Install via: pip install git+https://github.com/CPJKU/beat_this.git
+beat-this @ git+https://github.com/CPJKU/beat_this.git
+
+# Beat This! dependencies
+torch
+torchaudio
+einops
+soxr
+rotary-embedding-torch
