@@ -1,0 +1,49 @@
+Step 1: Pre-computing RNN activations...
+  Error jazz_00054: "All attempts to load audio file './GTZAN/jazz/jazz.00054.wav' failed."
+Loaded 929 files.
+
+Step 2: Per-genre DBN parameter search...
+
+  blues         best params: transition=200, observation=32  →  F1=0.8570
+  classical     best params: transition= 50, observation=16  →  F1=0.6644
+  country       best params: transition=100, observation=16  →  F1=0.9049
+  disco         best params: transition=150, observation=24  →  F1=0.9664
+  hiphop        best params: transition=150, observation=16  →  F1=0.9619
+  jazz          best params: transition=200, observation= 8  →  F1=0.8197
+  metal         best params: transition= 50, observation=32  →  F1=0.8572
+  pop           best params: transition=300, observation=16  →  F1=0.9376
+  reggae        best params: transition=200, observation= 8  →  F1=0.9415
+  rock          best params: transition=100, observation=24  →  F1=0.8789
+
+Global best (transition=300, observation=8) per genre:
+  blues         F1=0.8257
+  classical     F1=0.6524
+  country       F1=0.8974
+  disco         F1=0.9639
+  hiphop        F1=0.9348
+  jazz          F1=0.8189
+  metal         F1=0.8533
+  pop           F1=0.9138
+  reggae        F1=0.9414
+  rock          F1=0.8542
+
+Generating per-genre optimised predictions...
+
+=================================================================
+Genre         Global F1  Per-Genre F1        Δ
+-----------------------------------------------------------------
+  blues            0.8257        0.8570  +0.0312
+  classical        0.6524        0.6644  +0.0120
+  country          0.8974        0.9049  +0.0075
+  disco            0.9639        0.9664  +0.0025
+  hiphop           0.9348        0.9619  +0.0272
+  jazz             0.8189        0.8197  +0.0008
+  metal            0.8533        0.8572  +0.0038
+  pop              0.9138        0.9376  +0.0239
+  reggae           0.9414        0.9415  +0.0001
+  rock             0.8542        0.8789  +0.0247
+-----------------------------------------------------------------
+  OVERALL          0.8664        0.8790  +0.0126
+
+Saved to dbn_per_genre_predictions.json
+Evaluate with: python eval_json.py dbn_per_genre_predictions.json
