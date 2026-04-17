@@ -1,0 +1,38 @@
+/home/kojiek/venvs/beat-tracking/lib/python3.12/site-packages/madmom/evaluation/beats.py:916: UserWarning: Not enough beat annotations (34) for 40 histogram bins.
+  warnings.warn("Not enough beat annotations (%d) for %d histogram bins."
+/home/kojiek/venvs/beat-tracking/lib/python3.12/site-packages/madmom/evaluation/beats.py:916: UserWarning: Not enough beat annotations (31) for 40 histogram bins.
+  warnings.warn("Not enough beat annotations (%d) for %d histogram bins."
+/home/kojiek/venvs/beat-tracking/lib/python3.12/site-packages/madmom/evaluation/beats.py:916: UserWarning: Not enough beat annotations (35) for 40 histogram bins.
+  warnings.warn("Not enough beat annotations (%d) for %d histogram bins."
+/home/kojiek/venvs/beat-tracking/lib/python3.12/site-packages/madmom/evaluation/beats.py:916: UserWarning: Not enough beat annotations (37) for 40 histogram bins.
+  warnings.warn("Not enough beat annotations (%d) for %d histogram bins."
+/home/kojiek/venvs/beat-tracking/lib/python3.12/site-packages/madmom/evaluation/beats.py:916: UserWarning: Not enough beat annotations (28) for 40 histogram bins.
+  warnings.warn("Not enough beat annotations (%d) for %d histogram bins."
+/home/kojiek/venvs/beat-tracking/lib/python3.12/site-packages/madmom/evaluation/beats.py:916: UserWarning: Not enough beat annotations (30) for 40 histogram bins.
+  warnings.warn("Not enough beat annotations (%d) for %d histogram bins."
+/home/kojiek/venvs/beat-tracking/lib/python3.12/site-packages/madmom/evaluation/beats.py:916: UserWarning: Not enough beat annotations (26) for 40 histogram bins.
+  warnings.warn("Not enough beat annotations (%d) for %d histogram bins."
+/home/kojiek/venvs/beat-tracking/lib/python3.12/site-packages/madmom/evaluation/beats.py:916: UserWarning: Not enough beat annotations (27) for 40 histogram bins.
+  warnings.warn("Not enough beat annotations (%d) for %d histogram bins."
+/home/kojiek/venvs/beat-tracking/lib/python3.12/site-packages/madmom/evaluation/beats.py:916: UserWarning: Not enough beat annotations (32) for 40 histogram bins.
+  warnings.warn("Not enough beat annotations (%d) for %d histogram bins."
+/home/kojiek/venvs/beat-tracking/lib/python3.12/site-packages/madmom/evaluation/beats.py:916: UserWarning: Not enough beat annotations (38) for 40 histogram bins.
+  warnings.warn("Not enough beat annotations (%d) for %d histogram bins."
+/home/kojiek/venvs/beat-tracking/lib/python3.12/site-packages/madmom/evaluation/beats.py:916: UserWarning: Not enough beat annotations (39) for 40 histogram bins.
+  warnings.warn("Not enough beat annotations (%d) for %d histogram bins."
+/home/kojiek/venvs/beat-tracking/lib/python3.12/site-packages/madmom/evaluation/beats.py:916: UserWarning: Not enough beat annotations (36) for 40 histogram bins.
+  warnings.warn("Not enough beat annotations (%d) for %d histogram bins."
+/home/kojiek/venvs/beat-tracking/lib/python3.12/site-packages/madmom/evaluation/beats.py:916: UserWarning: Not enough beat annotations (29) for 40 histogram bins.
+  warnings.warn("Not enough beat annotations (%d) for %d histogram bins."
+/home/kojiek/venvs/beat-tracking/lib/python3.12/site-packages/madmom/evaluation/beats.py:916: UserWarning: Not enough beat annotations (25) for 40 histogram bins.
+  warnings.warn("Not enough beat annotations (%d) for %d histogram bins."
+/home/kojiek/venvs/beat-tracking/lib/python3.12/site-packages/madmom/evaluation/beats.py:916: UserWarning: Not enough beat annotations (33) for 40 histogram bins.
+  warnings.warn("Not enough beat annotations (%d) for %d histogram bins."
+/home/kojiek/venvs/beat-tracking/lib/python3.12/site-packages/madmom/evaluation/beats.py:916: UserWarning: Not enough beat annotations (24) for 40 histogram bins.
+  warnings.warn("Not enough beat annotations (%d) for %d histogram bins."
+/home/kojiek/venvs/beat-tracking/lib/python3.12/site-packages/madmom/evaluation/beats.py:916: UserWarning: Not enough beat annotations (22) for 40 histogram bins.
+  warnings.warn("Not enough beat annotations (%d) for %d histogram bins."
+/home/kojiek/venvs/beat-tracking/lib/python3.12/site-packages/madmom/evaluation/beats.py:916: UserWarning: Not enough beat annotations (20) for 40 histogram bins.
+  warnings.warn("Not enough beat annotations (%d) for %d histogram bins."
+/home/kojiek/venvs/beat-tracking/lib/python3.12/site-packages/madmom/evaluation/beats.py:916: UserWarning: Not enough beat annotations (19) for 40 histogram bins.
+  warnings.warn("Not enough beat annotations (%d) for %d histogram bins."

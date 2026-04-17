@@ -1,0 +1,19 @@
+# Core scientific Python (NumPy 1.x is required by madmom 0.17 dev)
+numpy<2.0
+scipy
+cython
+
+# madmom — RNN/DBN/CRF beat tracking baseline
+madmom @ git+https://github.com/CPJKU/madmom.git
+
+# Beat This! (Böck et al., 2024) — main model
+beat-this @ git+https://github.com/CPJKU/beat_this.git
+
+# PyTorch (Beat This! requires torch >= 2.0)
+torch
+torchaudio
+
+# Beat This! supporting libraries
+einops
+soxr
+rotary-embedding-torch
