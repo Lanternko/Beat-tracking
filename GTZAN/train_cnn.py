@@ -130,7 +130,9 @@ def load_or_extract_val(audio_id, audio_root, cache_dir, cache_tag,
 # ============================================================
 # 3) SpecAugment（輕量版，備用）
 # ============================================================
-def spec_augment(mel, freq_mask_param=10, time_mask_param=10):
+def spec_augment(mel, freq_mask_param=10, time_mask_param=10, p=0.5):
+    if random.random() > p:
+        return mel
     cloned = mel.clone().squeeze(0)
     n_mels, n_frames = cloned.shape
     f  = random.randint(0, freq_mask_param)
@@ -146,6 +148,11 @@ def spec_augment(mel, freq_mask_param=10, time_mask_param=10):
 # 4) Dataset：預先載入去靜音後的 waveform，隨機多取段
 # ============================================================
 class MultiCropDataset(Dataset):
+    """
+    加速版：__init__ 預算每首歌的完整 mel spectrogram（只算一次），
+    __getitem__ 只做 random time-frame crop（純 numpy 切片，極快）。
+    保留隨機性：每次取不同時間段，等效於 waveform random crop。
+    """
     def __init__(
         self, df, audio_root, label2idx,
         segment_sec=3.0, target_sr=22050,
@@ -153,12 +160,6 @@ class MultiCropDataset(Dataset):
         samples_per_song=10, top_db=20,
         augment=False, freq_mask_param=10, time_mask_param=10,
     ):
-        self.label2idx       = label2idx
-        self.segment_sec     = segment_sec
-        self.target_sr       = target_sr
-        self.n_mels          = n_mels
-        self.n_fft           = n_fft
-        self.hop_length      = hop_length
         self.target_frames   = target_frames
         self.samples_per_song = samples_per_song
         self.augment         = augment
@@ -167,41 +168,56 @@ class MultiCropDataset(Dataset):
 
         df = df.reset_index(drop=True)
 
-        print("  [Dataset] 預先載入 waveform（含去靜音）...")
-        self.waveforms = []
-        self.labels    = []
-        for _, row in df.iterrows():
+        print("  [Dataset] 預先載入 waveform + 計算完整 mel spectrogram...")
+        self.full_melspecs = []  # 每首歌的完整 mel spectrogram (n_mels, T_full)
+        self.labels        = []
+        for i, (_, row) in enumerate(df.iterrows()):
             path  = os.path.join(audio_root, str(row["ID"]).strip())
             label = label2idx[str(row["label"]).strip()]
             if os.path.isfile(path):
                 try:
-                    y, _ = trim_and_load(path, target_sr=target_sr, top_db=top_db)
-                    self.waveforms.append(y)
+                    y, sr = trim_and_load(path, target_sr=target_sr, top_db=top_db)
+                    mel    = librosa.feature.melspectrogram(
+                        y=y, sr=sr, n_mels=n_mels, n_fft=n_fft, hop_length=hop_length
+                    )
+                    mel_db = librosa.power_to_db(mel, ref=np.max)
+                    self.full_melspecs.append(mel_db.astype(np.float32))
                 except Exception:
-                    self.waveforms.append(
-                        np.zeros(int(segment_sec * target_sr), dtype=np.float32)
+                    # fallback: 靜音 → 最小 melspec
+                    self.full_melspecs.append(
+                        np.full((n_mels, target_frames), -80.0, dtype=np.float32)
                     )
             else:
-                self.waveforms.append(
-                    np.zeros(int(segment_sec * target_sr), dtype=np.float32)
+                self.full_melspecs.append(
+                    np.full((n_mels, target_frames), -80.0, dtype=np.float32)
                 )
             self.labels.append(label)
-        print(f"  [Dataset] 完成，{len(self.waveforms)} 首歌已載入")
+            if (i + 1) % 200 == 0:
+                print(f"    已處理 {i+1}/{len(df)} 首")
+        print(f"  [Dataset] 完成，{len(self.full_melspecs)} 首歌的 melspec 已快取到 RAM")
 
     def __len__(self):
-        return len(self.waveforms) * self.samples_per_song
+        return len(self.full_melspecs) * self.samples_per_song
 
     def __getitem__(self, idx):
-        song_idx = idx % len(self.waveforms)
-        y        = self.waveforms[song_idx]
+        song_idx = idx % len(self.full_melspecs)
+        mel_db   = self.full_melspecs[song_idx]
         label    = self.labels[song_idx]
 
-        spec = random_crop_from_waveform(
-            y, self.target_sr, self.segment_sec,
-            self.n_mels, self.n_fft, self.hop_length, self.target_frames
-        )
+        # Random time-frame crop（純 numpy 切片，極快）
+        T = mel_db.shape[1]
+        if T <= self.target_frames:
+            crop = np.pad(mel_db, ((0, 0), (0, self.target_frames - T)), mode="constant")
+        else:
+            start = random.randint(0, T - self.target_frames)
+            crop  = mel_db[:, start : start + self.target_frames]
 
-        x = torch.from_numpy(spec).unsqueeze(0)  # (1, n_mels, n_frames)
+        # Per-segment 正規化（和原版一致）
+        mean = crop.mean()
+        std  = crop.std() + 1e-8
+        crop = (crop - mean) / std
+
+        x = torch.from_numpy(crop).unsqueeze(0)  # (1, n_mels, target_frames)
         if self.augment:
             x = spec_augment(x, self.freq_mask_param, self.time_mask_param)
 

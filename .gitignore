@@ -36,3 +36,6 @@ venv/
 # IDE
 .vscode/
 .idea/
+
+# karaoke-jp lives in its own repo: https://github.com/Lanternko/karaoke-jp
+karaoke-jp/
