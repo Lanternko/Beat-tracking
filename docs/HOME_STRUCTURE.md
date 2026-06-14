@@ -37,7 +37,15 @@ Git repo: `https://github.com/Lanternko/side_projects` (private)
 
 | 目錄 | 用途 |
 |------|------|
-| `side_projects/GTZAN/` | 神經網路課 — 音樂類型分類 |
+| `side_projects/apps/discord-social-preview-bot/` | Discord social preview bot |
+| `side_projects/music-ai/karaoke-jp/` | 日文 karaoke timing / rendering pipeline |
+| `side_projects/music-ai/lyrics-transcription-benchmark/` | 日文歌詞轉錄 benchmark |
+| `side_projects/coursework/audio/GTZAN/` | 神經網路課 — 音樂類型分類 |
+| `side_projects/coursework/audio/beat-tracking/` | Beat tracking 作業 |
+| `side_projects/coursework/nlp/Qwen3-SLU-for-NLP/` | Qwen3-SLU 作業 |
+| `side_projects/coursework/nlp/nlp_csc_assignment_11502_2/` | 中文拼字檢查作業 |
+| `side_projects/reference-repos/chinese-spelling-check/` | CSC 作業/實驗參考 repo |
+| `side_projects/_archive/` | 舊備份與作業成果封存 |
 
 ### 資料入口（`data/`）
 

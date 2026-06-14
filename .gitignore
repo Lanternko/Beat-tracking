@@ -23,6 +23,9 @@ __pycache__/
 *.pyc
 *.egg-info/
 .eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
 # OS
 .DS_Store
@@ -33,9 +36,38 @@ Thumbs.db
 venv/
 .venv/
 
+# Node
+node_modules/
+
+# Local runtime/cache state
+.cache/
+.snakemake/
+*.log
+*.pid
+
+# Experiment-heavy generated outputs
+outputs/
+exp/
+tmp/
+
 # IDE
 .vscode/
 .idea/
 
 # karaoke-jp lives in its own repo: https://github.com/Lanternko/karaoke-jp
 karaoke-jp/
+music-ai/karaoke-jp/
+
+# Self-contained or archived projects kept outside this wrapper repo
+apps/discord-social-preview-bot/
+coursework/nlp/
+music-ai/lyrics-transcription-benchmark/
+reference-repos/
+_archive/
+# Self-contained projects with large media / own tooling, not versioned here yet
+/slides/
+/karaoke_static_maker/
+
+# Large local datasets / copyright-restricted data (kept on disk, never committed)
+/kiritan/
+/kiritan_singing.zip
