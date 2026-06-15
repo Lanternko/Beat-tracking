@@ -86,8 +86,40 @@ python3 matchup_gd10.py          # 秒級、確定性、讀 data/lol.db
 - 反對稱加性 ridge（純 numpy normal equations，不 materialize X）；time-split walk-forward；rank-based AUC；cluster(match) bootstrap CI。
 - 母體：queue 420、champion/opp_champion/gd10 非空。
 
-## 7. 雷與下一步
+## 7. 準確率天花板：玩家實力 / 隊伍 context 都加不動（§7 [`../gd10_ceiling.py`](../gd10_ceiling.py) + §8 [`../gd10_teamctx.py`](../gd10_teamctx.py)）
 
-- **雷**：時間跨度窄（單賽季 patch 16.5–16.12）、單 elo 帶（Chall+GM）；ridge λ=25 未調（對 R² 量級不敏感，已試過數量級穩定）；per-lane→win 是「你這路優勢 vs 你隊伍贏」，團隊層級 draft→win 另見 draft_vs_execution。
-- **這條已收束**：機制故事完整（draft→gd@10 有、gd@10→win 的選角部分無）。
-- **可延伸（payoff 不確定）**：①把 §1 的 θ 當「對線強度 tier list」輸出（menu E，幾乎免費）；②五人 comp 對 gd@10 的協同（對標 [`DRAFT_META.md`](DRAFT_META.md) §7 v4；pairwise counter 已證弱→上限可能有限）；③跨 elo 帶比較（需更多資料）。
+「提升準確率」：從 §1 純對位（R²=0.058）往上，把所有 pre-game 槓桿逐一加進去測。
+
+**§7 準確率階梯（時序 oos，雙因子加性 backfit `gd10 = θ[champ] + φ[player]`，θ/φ 皆 train-only）**：
+
+| 模型 | R²_oos | AUC | MAE |
+|---|---|---|---|
+| M0 純對位（§1） | 0.059 | 0.616 | 645 |
+| M1 +玩家對線實力 | **0.062** | **0.622** | 643 |
+| 只有玩家 | 0.005 | 0.552 | 663 |
+
+→ **最大候選槓桿（玩家實力）幾乎沒用：只 +0.3% R² / +0.6pp AUC**。test 玩家僅 51% 有 ≥10 場 train 歷史（冷啟動）；且 Chall+GM 單一窄帶、技術變異被壓縮。
+
+**變異分解（oos，可預測天花板）**：選誰(champ) **5.9%** ／ 誰在玩(+player) **+0.3%** ／ **純不可測(臨場/variance) 93.8%**。**高端 10 分鐘對線結果 ≈94% 不可由任何賽前資訊預測。**
+
+**§8 隊伍/跨路 context（最後一個槓桿）**：`gd10 ~ own + 打野θ差 + 其餘四路θ差`——打野係數 **+0.00**、其餘四路 **+0.03**、R² 全停在 0.056。非打野列的打野壓力外溢 Δ R²=+0.0001。**隊伍 draft 對個別路 gd@10 零外溢，對線是孤島。**（own 係數 +1.10 確認 θ 尺度對。）
+
+**win-flow 精修（接 §4，CI 排除 .50）**：
+
+| 對線預測力的成分 | → win AUC |
+|---|---|
+| champ-component（純選角） | 0.498（死路）|
+| **player-component（玩家對線實力）** | **0.516** `[.506,.525]` |
+| full predicted | 0.507 |
+| actual gd@10（含臨場） | 0.639 |
+
+→ **player 對線實力是唯一微弱流向勝負的對線成分**（soloQ matchmaking 把它壓到 .516、殘留一絲：smurf/排位膨脹）；champ 那塊完全死路。精修 §4：不是全部對線預測力都⊥勝負，玩家那一丁點會穿過去。
+
+**結論**：**高端 gd@10 預測天花板 ≈6% R² / 0.62 AUC，純對位已抵達**；玩家實力、打野壓力、隊伍 draft **全加不動**。能預測的 6% 幾乎全是英雄對位，其餘 94% 是賽前碰不到的臨場。這從對線角度再證 matchmaking 天花板：頂端連「對線結果本身」都主要由不可測執行決定。
+
+## 8. 雷與下一步
+
+- **雷**：時間跨度窄（單賽季 patch 16.5–16.12）、單 elo 帶（Chall+GM，技術變異被壓縮→player 槓桿天生小）；ridge λ=25 未調（對 R² 量級不敏感）；player φ 用 2-pass backfit shrunk-mean（近似 joint ridge）、冷啟動 φ=0；per-lane→win 是「你這路優勢 vs 你隊伍贏」。
+- **已收束（三槓桿確認天花板）**：champ ＝ 唯一非零可預測來源；player/jungle/team-context 皆 ≈0。
+- **唯一未測**：non-linear（GBM 等）抓 champ-pair 交互——但 §3 已證 counter 殘差 split-half r=.072≈雜訊，**預期 GBM 也不幫**（資料對 pairwise 太稀疏）。要做可作最終確認。
+- **可延伸（payoff 不確定）**：①把 §1 的 θ 當「對線強度 tier list」輸出（menu E，幾乎免費）；②跨 elo 帶比較（低分段技術變異大→player 槓桿可能才顯著，需更多資料）。
