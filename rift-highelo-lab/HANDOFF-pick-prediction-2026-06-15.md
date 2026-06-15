@@ -3,6 +3,8 @@
 新對話接這份就能續 §4 → §5。配 auto-memory `sr_pick_prediction`、`sr_highelo_project`、`sr_prior_art_survey`、`sr_repro_results`。
 腳本 = [`predict_picks.py`](predict_picks.py)（根目錄，9648 場 `data/lol.db`，**16s 可重跑、確定性 SEED=42**）。
 
+> **2026-06-15 更新：下方「下一步」的 §5 已完成** → 見 [`HANDOFF-offmeta-causal-2026-06-15.md`](HANDOFF-offmeta-causal-2026-06-15.md)（腳本 `offmeta_causal.py`）。結論：**真軸是 familiarity、不是 meta**；off-meta 傷對線（英雄屬性）但控玩家後不傷勝率；熟練 off-meta one-trick 53.1% ＝ 熟練 on-meta。
+
 ---
 
 ## 這次做了什麼（一句話）

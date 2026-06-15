@@ -7,7 +7,9 @@ KR 高端 soloQ（Challenger + GrandMaster）對線分析。ARAM-Mayhem-Database
 >
 > **2026-06-15 複現/前向預測成果**：交接見 [`repro/HANDOFF-2026-06-15.md`](repro/HANDOFF-2026-06-15.md)，完整結果見 [`repro/RESULTS.md`](repro/RESULTS.md)。下一步推薦 **draft→gd@10**（menu A 強化版）。
 >
-> **2026-06-15 §4 選角預測 / meta 收斂成果**：交接見 [`HANDOFF-pick-prediction-2026-06-15.md`](HANDOFF-pick-prediction-2026-06-15.md)（腳本 `predict_picks.py`）。選角 top-1 15% / top-5 41%、有效英雄池 BOT25<…<TOP51、off-meta 無勝率稅。下一步 = **§5 偏離 meta 對勝負的因果**（控 PUUID）。
+> **2026-06-15 §4 選角預測 / meta 收斂成果**：交接見 [`HANDOFF-pick-prediction-2026-06-15.md`](HANDOFF-pick-prediction-2026-06-15.md)（腳本 `predict_picks.py`）。選角 top-1 15% / top-5 41%、有效英雄池 BOT25<…<TOP51、off-meta 無勝率稅。**§5 已完成**（見下）。
+>
+> **2026-06-15 §5 off-meta 因果 / 玩家身份首動**：交接見 [`HANDOFF-offmeta-causal-2026-06-15.md`](HANDOFF-offmeta-causal-2026-06-15.md)（腳本 `offmeta_causal.py`）。**真軸是 familiarity 不是 meta**：熟練 off-meta one-trick 勝率 53.1% ＝ 熟練 on-meta；off-meta 只傷對線（英雄屬性）、控玩家後不傷勝率。＝ finding #1 玩家層級版、menu B 首次動工。
 >
 > **2026-06-15 職業 draft 選角預測 + meta 理解**：詳見 [`repro/DRAFT_META.md`](repro/DRAFT_META.md)（交接併入 [`repro/HANDOFF-2026-06-15.md`](repro/HANDOFF-2026-06-15.md)）。職業逐手序列預測 top-1 **28.5%** / recall@5 **74%**（pro ≈2× soloQ，差在 ban/fearless/順序）；**可用性約束主宰、身份訊號皆弱**；meta 半衰期 8 patch、位移 pre-Worlds 小季前大、偵測＝模型 recall 掉幅(+0.49)。draft 偏離→勝負三度確認平。
 
@@ -23,7 +25,8 @@ KR 高端 soloQ（Challenger + GrandMaster）對線分析。ARAM-Mayhem-Database
 1. **對線強度 ⊥ 勝率**（`analyze_laning.py`）：lane bully（MF/Varus/Irelia）對線碾壓但勝率平庸；scaler（Vladimir/DrMundo/Pantheon）對線墊底卻高勝率。→ 對線只是基準，β（打團/後期/邊帶）是另一條軸。
 2. **對線預測勝負**（`predict_winrate.py` / `lane_winrate.py`）：gd@10 AUC=0.78、gd@14=0.83；分路重要度 **打野 > 中路 > 下路 > 上路 > 輔助**（partial 係數與單變量 AUC 一致）；金錢曲線 +2k@10→87% 勝、−2k→18%；打野領先 500→~60%。
 3. **選角幾乎不決定勝負**（`draft_vs_execution.py`）：純 draft AUC≈**0.50**（高端夠平衡）；execution ≫ draft；英雄身份在 N=1500 加不進預測（427 特徵過擬合 + gold@10 已吸收英雄價值）。是否為資料不足，待大 crawl 重測。
-4. **選角預測 / meta 收斂**（`predict_picks.py`，9648 場，masked-completion）：預測 picks → top-1 **15%** / top-5 41%（context 只 +3pp ＝高端照 tier list 選、不繞 lobby）；有效英雄池 **BOT25 < JNG/SUP31 < MID48 < TOP51**（meta 是分路現象、跨 patch 穩定）；模型機率 vs 勝率全平 ~50% ＝ **off-meta 無勝率稅**（未控玩家，§5 待做）。交接見 [`HANDOFF-pick-prediction-2026-06-15.md`](HANDOFF-pick-prediction-2026-06-15.md)。
+4. **選角預測 / meta 收斂**（`predict_picks.py`，9648 場，masked-completion）：預測 picks → top-1 **15%** / top-5 41%（context 只 +3pp ＝高端照 tier list 選、不繞 lobby）；有效英雄池 **BOT25 < JNG/SUP31 < MID48 < TOP51**（meta 是分路現象、跨 patch 穩定）；模型機率 vs 勝率全平 ~50% ＝ **off-meta 無勝率稅**（未控玩家；§5 已控玩家確認 → 見 finding #5）。交接見 [`HANDOFF-pick-prediction-2026-06-15.md`](HANDOFF-pick-prediction-2026-06-15.md)。
+5. **off-meta 傷線不傷勝率、真軸是 familiarity**（`offmeta_causal.py`，96480 picks，控玩家 FE）：off-meta 系統性輸線（gd10 vs on-meta 差 ~50–100 金、每 familiarity 層都在＝英雄屬性）但幾乎不傷勝率；**熟練 off-meta one-trick 53.1% ＝ 熟練 on-meta 53.1%**，off-meta 唯一勝率稅是「不熟 × off-meta」交互（−2.9pp，扛得住 autofill）。within-player FE 把 RAW 傷線砍半（−61→−27 金）、player 勝率 covariate 係數僅 **0.04**（matchmaking 天花板再現）。＝ finding #1 在玩家層級重現 + **menu B 首動**。交接見 [`HANDOFF-offmeta-causal-2026-06-15.md`](HANDOFF-offmeta-causal-2026-06-15.md)。
 
 ## 檔案
 
@@ -39,6 +42,7 @@ KR 高端 soloQ（Challenger + GrandMaster）對線分析。ARAM-Mayhem-Database
 | `draft_vs_execution.py` | draft vs 早期戰況 的預測力分解 |
 | `build_counter_matrix.py` | counter δ 矩陣（A vs B 對線優劣，Bayesian shrink；menu A）|
 | `predict_picks.py` | 選角預測（masked-completion）+ meta 收斂度（有效英雄池）+ off-meta 預告（§4）|
+| `offmeta_causal.py` | off-meta 對勝負的因果（控玩家 FE + familiarity + autofill 穩健；§5、menu B 首動）|
 | `probe_sample.py` | 抓單場驗結構（gold-first 探針） |
 
 ## 跑 / 續傳
@@ -53,6 +57,7 @@ python3 predict_winrate.py
 python3 lane_winrate.py JUNGLE          # TOP/JUNGLE/MIDDLE/BOTTOM/UTILITY
 python3 draft_vs_execution.py
 python3 predict_picks.py                # 選角預測率 + meta 收斂度（§4，16s）
+python3 offmeta_causal.py               # off-meta 對勝負的因果（控玩家 FE，§5，1s）
 ```
 
 環境：python3 + numpy/sklearn/scipy/pandas/matplotlib（已驗證可用）。
@@ -98,7 +103,7 @@ python3 predict_picks.py                # 選角預測率 + meta 收斂度（§4
 | 方向 | 內容 | 狀態 | 對標 / 可 cite |
 |---|---|---|---|
 | **A. Counter 矩陣 (δ)** | 英雄 vs 英雄的對線優劣，Bayesian shrink（prior=μ_A，= ARAM lift 同構）。回答「A 對 B 吃不吃虧」 | 直接接續；先把 crawl 續到 ~8k 補對位樣本 | DraftGap（加總式上限）；高端 draft⊥勝率＝賣點 |
-| **B. 玩家身份 (ID 軸)** | 第三軸，未動。用 PUUID 追個別玩家：招牌英雄池、smurf 偵測、穩定度/variance、player fixed-effect 控制球員強弱後再看英雄/對位 | 全新；資料已有 13403 玩家（seed 玩家場次多） | ProjektZero（Player-Elo/TrueSkill 主訊號）；⚠️ IEEE CoG 2021 玩家歷史 AUC0.97 是 leakage 教訓 |
+| **B. 玩家身份 (ID 軸)** | 第三軸。用 PUUID 追個別玩家：招牌英雄池、smurf 偵測、穩定度/variance、player fixed-effect 控制球員強弱後再看英雄/對位 | **§5 首動**（`offmeta_causal.py`）：familiarity ≫ meta、off-meta 傷線不傷勝率；下一步 champ-FE 分離英雄屬性 + player latent skill(TrueSkill) | ProjektZero（Player-Elo/TrueSkill 主訊號）；⚠️ IEEE CoG 2021 玩家歷史 AUC0.97 是 leakage 教訓 |
 | **C. 職業賽 (Oracle's Elixir)** | 另一條資料線（非 Riot API）。pro vs soloQ meta 分歧、職業限定/路人限定英雄、職業對線型態 | 全新資料源；下載 CSV 即用 | Oracle's Elixir（免費職業 CSV，@10/@15 diff 已算好）；ProjektZero |
 | **D. 比賽動態建模** | live win-probability over time、翻盤分析（高端多少金錢差還救得回）、objective/tempo 特徵、scale-vs-lane 象限分類器 | 接續 finding 2 | Silva&Pappa 2018(RNN 時序)；Junior 2023(gold #1 特徵)；Riot×AWS(XGBoost 特徵集) |
 | **E. SR tier list / comp 產品** | 各路 Bayesian tier list + team-comp synergy/lift + 靜態站（ARAM 風格移植到峽谷） | 產品向 | 高端勝率帶窄→**必附 CI 畫區間帶**；指標用 log-loss/Brier 分解非 acc |
