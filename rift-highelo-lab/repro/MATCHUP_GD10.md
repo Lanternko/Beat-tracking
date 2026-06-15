@@ -115,11 +115,12 @@ python3 matchup_gd10.py          # 秒級、確定性、讀 data/lol.db
 
 → **player 對線實力是唯一微弱流向勝負的對線成分**（soloQ matchmaking 把它壓到 .516、殘留一絲：smurf/排位膨脹）；champ 那塊完全死路。精修 §4：不是全部對線預測力都⊥勝負，玩家那一丁點會穿過去。
 
-**結論**：**高端 gd@10 預測天花板 ≈6% R² / 0.62 AUC，純對位已抵達**；玩家實力、打野壓力、隊伍 draft **全加不動**。能預測的 6% 幾乎全是英雄對位，其餘 94% 是賽前碰不到的臨場。這從對線角度再證 matchmaking 天花板：頂端連「對線結果本身」都主要由不可測執行決定。
+**§9 GBM 封棺**（[`../gd10_gbm.py`](../gd10_gbm.py)）：給 non-linear 最強配置——native-categorical 雙英雄交互（能 split on myChamp×oppChamp＝pairwise）+ 玩家實力 + role + patch，掃 4 組正則化（靈活→極保守）。**oos R² 全負（−.027 ~ −.042），in-sample 全 0.30+**＝GBM 把 champ-pair/玩家細節記成噪音、完全不泛化（呼應 §3 counter 殘差 r=.072≈雜訊）。**non-linear 連加性的 6% 都打不過**；加性的「反對稱 + 強 shrinkage」才是對的歸納偏置，那之外無真訊號值得更高彈性。
+
+**結論**：**高端 gd@10 預測天花板 ≈6% R² / 0.62 AUC，純對位已抵達**；玩家實力、打野壓力、隊伍 draft、non-linear 交互 **全加不動**。能預測的 6% 幾乎全是英雄對位，其餘 94% 是賽前碰不到的臨場。這從對線角度再證 matchmaking 天花板：頂端連「對線結果本身」都主要由不可測執行決定。
 
 ## 8. 雷與下一步
 
 - **雷**：時間跨度窄（單賽季 patch 16.5–16.12）、單 elo 帶（Chall+GM，技術變異被壓縮→player 槓桿天生小）；ridge λ=25 未調（對 R² 量級不敏感）；player φ 用 2-pass backfit shrunk-mean（近似 joint ridge）、冷啟動 φ=0；per-lane→win 是「你這路優勢 vs 你隊伍贏」。
-- **已收束（三槓桿確認天花板）**：champ ＝ 唯一非零可預測來源；player/jungle/team-context 皆 ≈0。
-- **唯一未測**：non-linear（GBM 等）抓 champ-pair 交互——但 §3 已證 counter 殘差 split-half r=.072≈雜訊，**預期 GBM 也不幫**（資料對 pairwise 太稀疏）。要做可作最終確認。
+- **已收束（四槓桿 + 封棺）**：champ ＝ 唯一非零可預測來源；player / jungle / team-context / non-linear 皆 ≈0 或負。§9 GBM 已封棺（4 組正則化 oos R² 全負）——線性非線性、所有 pre-game 特徵都到頂。
 - **可延伸（payoff 不確定）**：①把 §1 的 θ 當「對線強度 tier list」輸出（menu E，幾乎免費）；②跨 elo 帶比較（低分段技術變異大→player 槓桿可能才顯著，需更多資料）。
